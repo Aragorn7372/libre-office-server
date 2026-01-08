@@ -1,0 +1,29 @@
+services:
+  libreoffice:
+    image: lscr.io/linuxserver/libreoffice:latest
+    container_name: libreoffice
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Etc/UTC
+    volumes:
+      - /path/to/config:/config
+    shm_size: "2gb"
+    restart: unless-stopped
+    networks:
+      - webnet # red de contenedores
+  proxy:
+    image: ubuntu/nginx # imagen de Nginx
+    ports:
+      - "80:80" # mapeo de puertos  HTTP
+      - "443:443" # mapeo de puertos  HTTPS
+    volumes:
+      - ./proxy/proxy.conf:/etc/nginx/nginx.conf # archivo de configuración principal
+      - ./certs:/etc/nginx/certs # directorio de certificados 
+    restart: always # reinicio automático
+    networks:
+      - webnet # red de contenedores
+networks:
+  webnet:
+    driver: bridge
+
