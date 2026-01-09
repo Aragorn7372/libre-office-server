@@ -1,29 +1,88 @@
 services:
-  libreoffice:
-    image: lscr.io/linuxserver/libreoffice:latest
-    container_name: libreoffice
-    environment:
-      - PUID=1000
-      - PGID=1000
-      - TZ=Etc/UTC
+  # Base de datos para Nextcloud
+  db:
+    image: mariadb:10.11
+    container_name: nextcloud-db
+    restart: unless-stopped
+    command: --transaction-isolation=READ-COMMITTED --log-bin=binlog --binlog-format=ROW
     volumes:
-      - /path/to/config:/config
-    shm_size: "2gb"
+      - db_data:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=rootpassword_cambiar
+      - MYSQL_PASSWORD=nextcloud_cambiar
+      - MYSQL_DATABASE=nextcloud
+      - MYSQL_USER=nextcloud
+    networks:
+      - webnet
+
+  # Redis para caché (mejora el rendimiento)
+  redis:
+    image: redis:alpine
+    container_name: nextcloud-redis
     restart: unless-stopped
     networks:
-      - webnet # red de contenedores
-  proxy:
-    image: ubuntu/nginx # imagen de Nginx
-    ports:
-      - "80:80" # mapeo de puertos  HTTP
-      - "443:443" # mapeo de puertos  HTTPS
-    volumes:
-      - ./proxy/proxy.conf:/etc/nginx/nginx.conf # archivo de configuración principal
-      - ./certs:/etc/nginx/certs # directorio de certificados 
-    restart: always # reinicio automático
-    networks:
-      - webnet # red de contenedores
-networks:
-  webnet:
-    driver: bridge
+      - webnet
 
+  # Nextcloud
+  nextcloud:
+    image: nextcloud:latest
+    container_name:  nextcloud
+    restart: unless-stopped
+    volumes:
+      - nextcloud_data:/var/www/html
+    environment:
+      - MYSQL_HOST=db
+      - MYSQL_DATABASE=nextcloud
+      - MYSQL_USER=nextcloud
+      - MYSQL_PASSWORD=nextcloud_cambiar
+      - REDIS_HOST=redis
+      - NEXTCLOUD_TRUSTED_DOMAINS=192.168.16.130
+      - OVERWRITEPROTOCOL=https
+      - OVERWRITEHOST=192.168.16.130
+      - OVERWRITECLIURL=https://192.168.16.130
+    depends_on:
+      - db
+      - redis
+    networks:
+      - webnet
+
+  # Collabora Online
+  collabora:
+    image:  collabora/code:latest
+    container_name: collabora
+    environment:
+      - aliasgroup1=https://192.168.16.130:443
+      - username=admin
+      - password=admin_password_cambiar
+      - extra_params=--o:ssl.enable=false --o:ssl.termination=true
+      - dictionaries=es_ES en_US
+    cap_add:
+      - MKNOD
+    restart: unless-stopped
+    networks: 
+      - webnet
+
+  # Nginx Proxy
+  proxy:
+    image: ubuntu/nginx
+    container_name:  nginx-proxy
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./proxy/proxy.conf:/etc/nginx/nginx.conf
+      - ./certs:/etc/nginx/certs
+    restart: always
+    depends_on:
+      - nextcloud
+      - collabora
+    networks: 
+      - webnet
+
+volumes: 
+  db_data:
+  nextcloud_data: 
+
+networks:
+  webnet: 
+    driver: bridge
