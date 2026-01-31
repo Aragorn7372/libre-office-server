@@ -1,0 +1,358 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="es">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.9.8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Dawazon: Servidor LibreOffice Online con Nextcloud</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectalign">
+   <div id="projectname">Dawazon<span id="projectnumber">&#160;0.1</span>
+   </div>
+   <div id="projectbrief">Tienda bien bacana</div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- Generado por Doxygen 1.9.8 -->
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+/* @license-end */
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+$(function() {
+  initMenu('',true,false,'search.php','Buscar');
+  $(document).ready(function() { init_search(); });
+});
+/* @license-end */
+</script>
+<div id="main-nav"></div>
+</div><!-- top -->
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">Cargando...</div>
+<div class="SRStatus" id="Searching">Buscando...</div>
+<div class="SRStatus" id="NoMatches">Nada coincide</div>
+</div>
+</div>
+</div>
+</div>
+
+<div><div class="header">
+  <div class="headertitle"><div class="title">Servidor LibreOffice Online con Nextcloud </div></div>
+</div><!--header-->
+<div class="contents">
+<div class="textblock"><p><a class="anchor" id="md__2home_2runner_2work_2libre-office-server_2libre-office-server_2README"></a> Este proyecto despliega una solución completa de ofimática en la nube utilizando Nextcloud y Collabora Online (LibreOffice), permitiendo editar documentos de office directamente desde el navegador.</p>
+<h1><a class="anchor" id="autotoc_md1"></a>
+📋 Índice</h1>
+<ul>
+<li>¿Cómo funciona?</li>
+<li>Arquitectura</li>
+<li>Requisitos previos</li>
+<li>Configuración</li>
+<li>Despliegue</li>
+<li>Verificación</li>
+<li>Solución de problemas</li>
+</ul>
+<h1><a class="anchor" id="autotoc_md2"></a>
+🔧 ¿Cómo funciona?</h1>
+<p>Este proyecto utiliza Docker Compose para orquestar múltiples servicios que trabajan juntos:</p>
+<ol type="1">
+<li><b>Nextcloud</b>: Plataforma de almacenamiento en la nube (similar a Google Drive/Dropbox)</li>
+<li><b>Collabora Online</b>: Motor de edición de documentos basado en LibreOffice</li>
+<li><b>MariaDB</b>: Base de datos para Nextcloud</li>
+<li><b>Redis</b>: Sistema de caché para mejorar el rendimiento</li>
+<li><b>Nginx</b>: Proxy inverso que gestiona el tráfico HTTPS y distribuye las peticiones</li>
+</ol>
+<h2><a class="anchor" id="autotoc_md3"></a>
+Flujo de trabajo</h2>
+<div class="fragment"><div class="line">Usuario → Nginx (HTTPS) → Nextcloud (gestión de archivos)</div>
+<div class="line">                       → Collabora (edición de documentos)</div>
+<div class="line">                       → Redis (caché)</div>
+<div class="line">                       → MariaDB (datos)</div>
+</div><!-- fragment --><h1><a class="anchor" id="autotoc_md4"></a>
+🏗️ Arquitectura</h1>
+<div class="fragment"><div class="line">┌─────────────────────────────────────────┐</div>
+<div class="line">│         Navegador (Puerto 443)          │</div>
+<div class="line">└─────────────────┬───────────────────────┘</div>
+<div class="line">                  │</div>
+<div class="line">          ┌───────▼───────┐</div>
+<div class="line">          │  Nginx Proxy  │</div>
+<div class="line">          │  (SSL/TLS)    │</div>
+<div class="line">          └───┬───────┬───┘</div>
+<div class="line">              │       │</div>
+<div class="line">    ┌─────────▼──┐  ┌▼──────────────┐</div>
+<div class="line">    │ Nextcloud  │  │  Collabora    │</div>
+<div class="line">    │  : 80      │  │  :9980        │</div>
+<div class="line">    └─┬────────┬─┘  └───────────────┘</div>
+<div class="line">      │        │</div>
+<div class="line">  ┌───▼──┐  ┌─▼─────┐</div>
+<div class="line">  │Redis │  │MariaDB│</div>
+<div class="line">  └──────┘  └───────┘</div>
+</div><!-- fragment --><h1><a class="anchor" id="autotoc_md5"></a>
+📦 Requisitos previos</h1>
+<ul>
+<li><b>Docker</b> (versión 20.10 o superior)</li>
+<li><b>Docker Compose</b> (versión 2.0 o superior)</li>
+<li><b>Certificados SSL/TLS</b> (autofirmados o de Let's Encrypt)</li>
+<li>Al menos <b>4GB de RAM</b> disponible</li>
+<li><b>10GB de espacio en disco</b> (más el espacio que quieras para almacenamiento)</li>
+</ul>
+<h1><a class="anchor" id="autotoc_md6"></a>
+⚙️ Configuración</h1>
+<h2><a class="anchor" id="autotoc_md7"></a>
+1. Preparar certificados SSL</h2>
+<p>Crea el directorio para los certificados:</p>
+<div class="fragment"><div class="line">mkdir -p certs</div>
+</div><!-- fragment --><p><b>Opción A: Certificados autofirmados (para pruebas)</b></p>
+<div class="fragment"><div class="line">openssl req -x509 -nodes -days 365 -newkey rsa:2048 \</div>
+<div class="line">  -keyout certs/tienda.key \</div>
+<div class="line">  -out certs/tienda.crt \</div>
+<div class="line">  -subj &quot;/C=ES/ST=Madrid/L=Madrid/O=MiEmpresa/CN=192.168.16.130&quot;</div>
+</div><!-- fragment --><p><b>Opción B: Let's Encrypt (para producción con dominio)</b></p>
+<div class="fragment"><div class="line"># Instala certbot primero</div>
+<div class="line">sudo apt-get install certbot</div>
+<div class="line"> </div>
+<div class="line"># Genera los certificados</div>
+<div class="line">sudo certbot certonly --standalone -d tu-dominio.com</div>
+<div class="line"> </div>
+<div class="line"># Copia los certificados</div>
+<div class="line">sudo cp /etc/letsencrypt/live/tu-dominio.com/fullchain.pem certs/tienda.crt</div>
+<div class="line">sudo cp /etc/letsencrypt/live/tu-dominio.com/privkey.pem certs/tienda.key</div>
+</div><!-- fragment --><h2><a class="anchor" id="autotoc_md8"></a>
+2. Ajustar configuración</h2>
+<h3><a class="anchor" id="autotoc_md9"></a>
+A. Modificar &lt;tt&gt;docker-compose.yml&lt;/tt&gt;</h3>
+<p>Cambia los siguientes valores <b>OBLIGATORIAMENTE</b>:</p>
+<div class="fragment"><div class="line"># Base de datos</div>
+<div class="line">environment:</div>
+<div class="line">  - MYSQL_ROOT_PASSWORD=TU_PASSWORD_SEGURA_AQUI  # ⚠️ Cambiar</div>
+<div class="line">  - MYSQL_PASSWORD=TU_PASSWORD_NEXTCLOUD_AQUI    # ⚠️ Cambiar</div>
+<div class="line"> </div>
+<div class="line"># Nextcloud</div>
+<div class="line">environment: </div>
+<div class="line">  - MYSQL_PASSWORD=TU_PASSWORD_NEXTCLOUD_AQUI    # ⚠️ Debe coincidir con el anterior</div>
+<div class="line">  - NEXTCLOUD_TRUSTED_DOMAINS=TU_IP_O_DOMINIO   # ⚠️ Cambiar</div>
+<div class="line">  - OVERWRITEHOST=TU_IP_O_DOMINIO               # ⚠️ Cambiar</div>
+<div class="line">  - OVERWRITECLIURL=https://TU_IP_O_DOMINIO     # ⚠️ Cambiar</div>
+<div class="line"> </div>
+<div class="line"># Collabora</div>
+<div class="line">environment: </div>
+<div class="line">  - aliasgroup1=https://TU_IP_O_DOMINIO:443     # ⚠️ Cambiar</div>
+<div class="line">  - username=admin                               # Opcional:  cambiar usuario admin</div>
+<div class="line">  - password=TU_PASSWORD_ADMIN_COLLABORA        # ⚠️ Cambiar</div>
+</div><!-- fragment --><p><b>Ejemplo con dominio:</b> </p><div class="fragment"><div class="line">- NEXTCLOUD_TRUSTED_DOMAINS=cloud.miempresa.com</div>
+<div class="line">- OVERWRITEHOST=cloud.miempresa.com</div>
+<div class="line">- OVERWRITECLIURL=https://cloud.miempresa.com</div>
+</div><!-- fragment --><p><b>Ejemplo con IP:</b> </p><div class="fragment"><div class="line">- NEXTCLOUD_TRUSTED_DOMAINS=192.168.1.100</div>
+<div class="line">- OVERWRITEHOST=192.168.1.100</div>
+<div class="line">- OVERWRITECLIURL=https://192.168.1.100</div>
+</div><!-- fragment --><h3><a class="anchor" id="autotoc_md10"></a>
+B. Modificar &lt;tt&gt;proxy/proxy.conf&lt;/tt&gt;</h3>
+<ol type="1">
+<li>Cambia el <code>server_name</code> en las líneas 30 y 37: <div class="fragment"><div class="line">server_name TU_IP_O_DOMINIO;</div>
+</div><!-- fragment --></li>
+<li>Si cambiaste los nombres de los certificados, actualiza las líneas 39-40: <div class="fragment"><div class="line">ssl_certificate /etc/nginx/certs/tu-certificado.crt;</div>
+<div class="line">ssl_certificate_key /etc/nginx/certs/tu-certificado.key;</div>
+</div><!-- fragment --></li>
+</ol>
+<h3><a class="anchor" id="autotoc_md11"></a>
+C. Configuraciones opcionales</h3>
+<p><b>Aumentar tamaño máximo de archivos</b> (en <code>proxy/proxy.conf</code>): </p><div class="fragment"><div class="line">client_max_body_size 50G;  # Cambiar de 10G a lo que necesites</div>
+</div><!-- fragment --><p><b>Cambiar puertos</b> (en <code>docker-compose.yml</code>): </p><div class="fragment"><div class="line">proxy:</div>
+<div class="line">  ports:</div>
+<div class="line">    - &quot;8080:80&quot;    # Puerto HTTP personalizado</div>
+<div class="line">    - &quot;8443:443&quot;   # Puerto HTTPS personalizado</div>
+</div><!-- fragment --><p><b>Agregar más idiomas a Collabora</b> (en <code>docker-compose.yml</code>): </p><div class="fragment"><div class="line">- dictionaries=es_ES en_US fr_FR de_DE pt_BR</div>
+</div><!-- fragment --><h1><a class="anchor" id="autotoc_md12"></a>
+🚀 Despliegue</h1>
+<h2><a class="anchor" id="autotoc_md13"></a>
+Paso 1: Clonar el repositorio</h2>
+<div class="fragment"><div class="line">git clone https://github.com/Aragorn7372/libre-office-server.git</div>
+<div class="line">cd libre-office-server</div>
+</div><!-- fragment --><h2><a class="anchor" id="autotoc_md14"></a>
+Paso 2: Configurar (ver sección anterior)</h2>
+<p>Asegúrate de haber:</p><ul>
+<li>✅ Generado los certificados SSL en <code>certs/</code></li>
+<li>✅ Modificado las contraseñas en <code>docker-compose.yml</code></li>
+<li>✅ Ajustado IP/dominio en <code>docker-compose.yml</code> y <code>proxy/proxy.conf</code></li>
+</ul>
+<h2><a class="anchor" id="autotoc_md15"></a>
+Paso 3: Iniciar servicios</h2>
+<div class="fragment"><div class="line"># Iniciar todos los servicios en segundo plano</div>
+<div class="line">docker-compose up -d</div>
+<div class="line"> </div>
+<div class="line"># Ver los logs en tiempo real</div>
+<div class="line">docker-compose logs -f</div>
+<div class="line"> </div>
+<div class="line"># Ver el estado de los contenedores</div>
+<div class="line">docker-compose ps</div>
+</div><!-- fragment --><h2><a class="anchor" id="autotoc_md16"></a>
+Paso 4: Configurar Nextcloud (primera vez)</h2>
+<ol type="1">
+<li>Abre tu navegador en <code><a href="https://TU_IP_O_DOMINIO">https://TU_IP_O_DOMINIO</a></code></li>
+<li>Crea una cuenta de administrador (usuario y contraseña)</li>
+<li>Nextcloud se configurará automáticamente con la base de datos</li>
+</ol>
+<h2><a class="anchor" id="autotoc_md17"></a>
+Paso 5: Instalar la aplicación Collabora Online</h2>
+<ol type="1">
+<li>En Nextcloud, ve a <b>Aplicaciones</b> (icono de cuadrícula arriba a la derecha)</li>
+<li>Busca **"Nextcloud Office"** o **"Collabora Online"**</li>
+<li>Haz clic en <b>Descargar e instalar</b></li>
+<li>Ve a <b>Configuración</b> → <b>Administración</b> → <b>Nextcloud Office</b></li>
+<li>Selecciona **"Usar tu propio servidor"**</li>
+<li>Introduce: <code><a href="https://TU_IP_O_DOMINIO">https://TU_IP_O_DOMINIO</a></code></li>
+<li>Guarda los cambios</li>
+</ol>
+<h1><a class="anchor" id="autotoc_md18"></a>
+✅ Verificación</h1>
+<h2><a class="anchor" id="autotoc_md19"></a>
+Comprobar que todos los servicios están corriendo</h2>
+<div class="fragment"><div class="line">docker-compose ps</div>
+</div><!-- fragment --><p>Deberías ver 5 contenedores en estado <code>Up</code>:</p><ul>
+<li><code>nextcloud</code></li>
+<li><code>nextcloud-db</code></li>
+<li><code>nextcloud-redis</code></li>
+<li><code>collabora</code></li>
+<li><code>nginx-proxy</code></li>
+</ul>
+<h2><a class="anchor" id="autotoc_md20"></a>
+Verificar conectividad con Collabora</h2>
+<div class="fragment"><div class="line">curl -k https://TU_IP_O_DOMINIO/hosting/discovery</div>
+</div><!-- fragment --><p>Deberías recibir una respuesta XML con información sobre Collabora.</p>
+<h2><a class="anchor" id="autotoc_md21"></a>
+Probar edición de documentos</h2>
+<ol type="1">
+<li>En Nextcloud, crea un nuevo archivo (+ → Documento nuevo)</li>
+<li>El documento debería abrirse en el editor de Collabora</li>
+<li>Realiza cambios y guarda</li>
+</ol>
+<h1><a class="anchor" id="autotoc_md22"></a>
+🐛 Solución de problemas</h1>
+<h2><a class="anchor" id="autotoc_md23"></a>
+Error: "No se puede conectar con Collabora"</h2>
+<p><b>Solución:</b> </p><div class="fragment"><div class="line"># Verifica que los dominios coincidan en docker-compose.yml y proxy. conf</div>
+<div class="line">grep -r &quot;192.168.16.130&quot; . </div>
+<div class="line"> </div>
+<div class="line"># Reinicia los servicios</div>
+<div class="line">docker-compose restart</div>
+</div><!-- fragment --><h2><a class="anchor" id="autotoc_md24"></a>
+Error: "Certificado SSL inválido"</h2>
+<p><b>Solución:</b> </p><div class="fragment"><div class="line"># Verifica que los certificados existen</div>
+<div class="line">ls -lh certs/</div>
+<div class="line"> </div>
+<div class="line"># Verifica los permisos</div>
+<div class="line">chmod 644 certs/tienda.crt</div>
+<div class="line">chmod 600 certs/tienda.key</div>
+<div class="line"> </div>
+<div class="line"># Reinicia el proxy</div>
+<div class="line">docker-compose restart proxy</div>
+</div><!-- fragment --><h2><a class="anchor" id="autotoc_md25"></a>
+Error: "Cannot write into config directory"</h2>
+<p><b>Solución:</b> </p><div class="fragment"><div class="line"># Cambia permisos del volumen de Nextcloud</div>
+<div class="line">docker-compose exec nextcloud chown -R www-data:www-data /var/www/html</div>
+</div><!-- fragment --><h2><a class="anchor" id="autotoc_md26"></a>
+Nextcloud no carga estilos CSS</h2>
+<p><b>Solución:</b> </p><div class="fragment"><div class="line"># Reconstruye los archivos estáticos</div>
+<div class="line">docker-compose exec -u www-data nextcloud php occ maintenance:repair</div>
+</div><!-- fragment --><h2><a class="anchor" id="autotoc_md27"></a>
+Ver logs de un servicio específico</h2>
+<div class="fragment"><div class="line"># Nextcloud</div>
+<div class="line">docker-compose logs -f nextcloud</div>
+<div class="line"> </div>
+<div class="line"># Collabora</div>
+<div class="line">docker-compose logs -f collabora</div>
+<div class="line"> </div>
+<div class="line"># Nginx</div>
+<div class="line">docker-compose logs -f proxy</div>
+</div><!-- fragment --><h1><a class="anchor" id="autotoc_md28"></a>
+🔄 Comandos útiles</h1>
+<div class="fragment"><div class="line"># Detener todos los servicios</div>
+<div class="line">docker-compose down</div>
+<div class="line"> </div>
+<div class="line"># Detener y eliminar volúmenes (⚠️ borra todos los datos)</div>
+<div class="line">docker-compose down -v</div>
+<div class="line"> </div>
+<div class="line"># Reiniciar un servicio específico</div>
+<div class="line">docker-compose restart nextcloud</div>
+<div class="line"> </div>
+<div class="line"># Ver uso de recursos</div>
+<div class="line">docker stats</div>
+<div class="line"> </div>
+<div class="line"># Actualizar imágenes</div>
+<div class="line">docker-compose pull</div>
+<div class="line">docker-compose up -d</div>
+<div class="line"> </div>
+<div class="line"># Backup de datos</div>
+<div class="line">docker run --rm -v libre-office-server_nextcloud_data:/data -v $(pwd):/backup \</div>
+<div class="line">  ubuntu tar czf /backup/nextcloud-backup-$(date +%Y%m%d).tar.gz /data</div>
+</div><!-- fragment --><h1><a class="anchor" id="autotoc_md29"></a>
+📚 Mantenimiento</h1>
+<h2><a class="anchor" id="autotoc_md30"></a>
+Actualizaciones</h2>
+<div class="fragment"><div class="line"># Detener servicios</div>
+<div class="line">docker-compose down</div>
+<div class="line"> </div>
+<div class="line"># Actualizar imágenes</div>
+<div class="line">docker-compose pull</div>
+<div class="line"> </div>
+<div class="line"># Iniciar con nuevas versiones</div>
+<div class="line">docker-compose up -d</div>
+</div><!-- fragment --><h2><a class="anchor" id="autotoc_md31"></a>
+Backups recomendados</h2>
+<ol type="1">
+<li><b>Datos de Nextcloud</b>: Volumen <code>nextcloud_data</code></li>
+<li><b>Base de datos</b>: Volumen <code>db_data</code></li>
+<li><b>Archivos de configuración</b>: <code>docker-compose.yml</code> y <code>proxy/proxy.conf</code></li>
+</ol>
+<h1><a class="anchor" id="autotoc_md32"></a>
+📄 Licencia</h1>
+<p>Este proyecto es de código abierto. Los componentes utilizados tienen sus propias licencias:</p><ul>
+<li>Nextcloud: AGPLv3</li>
+<li>Collabora Online: MPL 2.0</li>
+<li>MariaDB: GPL v2</li>
+<li>Nginx: BSD-like</li>
+</ul>
+<h1><a class="anchor" id="autotoc_md33"></a>
+🤝 Contribuciones</h1>
+<p>Las contribuciones son bienvenidas. Por favor, abre un issue o pull request para sugerencias y mejoras. </p>
+</div></div><!-- PageDoc -->
+</div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+Generado por&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
+</small></address>
+</body>
+</html>

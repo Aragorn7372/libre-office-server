@@ -1,0 +1,27 @@
+var searchData=
+[
+  ['c_20configuraciones_20opcionales_0',['C. Configuraciones opcionales',['../index.html#autotoc_md11',1,'']]],
+  ['cannot_20write_20into_20config_20directory_1',['Error: &quot;Cannot write into config directory&quot;',['../index.html#autotoc_md25',1,'']]],
+  ['carga_20estilos_20css_2',['Nextcloud no carga estilos CSS',['../index.html#autotoc_md26',1,'']]],
+  ['certificado_20ssl_20inválido_3',['Error: &quot;Certificado SSL inválido&quot;',['../index.html#autotoc_md24',1,'']]],
+  ['certificados_20ssl_4',['1. Preparar certificados SSL',['../index.html#autotoc_md7',1,'']]],
+  ['clonar_20el_20repositorio_5',['Paso 1: Clonar el repositorio',['../index.html#autotoc_md13',1,'']]],
+  ['collabora_6',['collabora',['../index.html#autotoc_md23',1,'Error: &quot;No se puede conectar con Collabora&quot;'],['../index.html#autotoc_md20',1,'Verificar conectividad con Collabora']]],
+  ['collabora_20online_7',['Paso 5: Instalar la aplicación Collabora Online',['../index.html#autotoc_md17',1,'']]],
+  ['comandos_20útiles_8',['🔄 Comandos útiles',['../index.html#autotoc_md28',1,'']]],
+  ['compose_20yml_20tt_9',['A. Modificar &lt;tt&gt;docker-compose.yml&lt;/tt&gt;',['../index.html#autotoc_md9',1,'']]],
+  ['comprobar_20que_20todos_20los_20servicios_20están_20corriendo_10',['Comprobar que todos los servicios están corriendo',['../index.html#autotoc_md19',1,'']]],
+  ['con_20collabora_11',['con collabora',['../index.html#autotoc_md23',1,'Error: &quot;No se puede conectar con Collabora&quot;'],['../index.html#autotoc_md20',1,'Verificar conectividad con Collabora']]],
+  ['con_20nextcloud_12',['Servidor LibreOffice Online con Nextcloud',['../index.html',1,'']]],
+  ['conectar_20con_20collabora_13',['Error: &quot;No se puede conectar con Collabora&quot;',['../index.html#autotoc_md23',1,'']]],
+  ['conectividad_20con_20collabora_14',['Verificar conectividad con Collabora',['../index.html#autotoc_md20',1,'']]],
+  ['conf_20tt_15',['B. Modificar &lt;tt&gt;proxy/proxy.conf&lt;/tt&gt;',['../index.html#autotoc_md10',1,'']]],
+  ['config_20directory_16',['Error: &quot;Cannot write into config directory&quot;',['../index.html#autotoc_md25',1,'']]],
+  ['configuración_17',['configuración',['../index.html#autotoc_md6',1,'⚙️ Configuración'],['../index.html#autotoc_md8',1,'2. Ajustar configuración']]],
+  ['configuraciones_20opcionales_18',['C. Configuraciones opcionales',['../index.html#autotoc_md11',1,'']]],
+  ['configurar_20nextcloud_20primera_20vez_19',['Paso 4: Configurar Nextcloud (primera vez)',['../index.html#autotoc_md16',1,'']]],
+  ['configurar_20ver_20sección_20anterior_20',['Paso 2: Configurar (ver sección anterior)',['../index.html#autotoc_md14',1,'']]],
+  ['contribuciones_21',['🤝 Contribuciones',['../index.html#autotoc_md33',1,'']]],
+  ['corriendo_22',['Comprobar que todos los servicios están corriendo',['../index.html#autotoc_md19',1,'']]],
+  ['css_23',['Nextcloud no carga estilos CSS',['../index.html#autotoc_md26',1,'']]]
+];
