@@ -1,0 +1,33 @@
+name: Doxygen GitHub Pages Deploy Action
+
+on:
+  push:
+    branches:
+      - master
+  workflow_dispatch:
+
+jobs:
+  docs:
+    name: Generates de docs
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Requirements
+        shell: bash
+        run: sudo apt update
+          && sudo apt install -y graphviz doxygen
+
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Build docs
+        run: cd docs && doxygen Doxyfile
+
+      - name: Create folder
+        run: touch docs/html/.nojekyll
+
+      - name: Deploy docs
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          folder: docs/html # The folder the action should deploy.
+          branch: gh-pages # The branch the action should deploy to.
+          token: ${{ secrets.GITHUB_TOKEN }}
